@@ -8,17 +8,14 @@
 \frametitle{Building a workflow}
 
 \begin{enumerate}
-  \item We tend to build things ``top-down'' or from the raw data file to the final product.
-    \begin{itemize}
-      \item I ``looked down'' on {\texttt{bash}} scripts before, but you might want to start from that on one data file first as a starting point.  Convert this to a Snakemake file.
-    \end{itemize}
-  \item Because of how wildcards are carried backwards (i.e., the {\green{corpus}} variable), you might want to start connecting things up from the {\magenta{all}} rule!
-  \item The Linux {\texttt{touch}} command is very useful (to me).  It creates a file with 0 bytes but with the current date and time.
+  \item I ``looked down'' on {\texttt{bash}} scripts before, but you might want to start from that on one data file first as a starting point.  Convert this to a Snakemake file.
+  \item Because of how wildcards are carried backwards (i.e., the {\green{corpus}} variable), you might want to start connecting things up from the {\magenta{all}} rule.
+  \item The Linux {\texttt{touch}} command can be useful here.  It updates the date/time or creates a new file with 0 bytes with the current date and time.
     \begin{itemize}
       \item So, you can link up the workflow first with {\texttt{touch \{output\}}} and then write the actual commands afterwards.
     \end{itemize}
-  \item I started numbering my output directories to help me figure out the order of the output files.
-  \item Send error messages of programs to the {\blue{log}} directive.  If it fails, then you have a message to read.
+  \item I started {\red{numbering}} my output directories to help me figure out the order of the output files.
+  \item Send error messages of programs to the {\blue{log}} directive.  If a rule fails, then you have a message to read.
 \end{enumerate}
 
 \end{frame}
@@ -46,10 +43,17 @@ Use:
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{background/pipeline-example-branching.eps}
+  \includegraphics[width=\linewidth]{tips/pipeline-example-branching.eps}
 \end{figure}
 
 When trying to find out where in your workflow is causing you grief, you can remove an entire branch by commenting it out from the {\green{input}} directive of the rule it is going to.
+\vs
+
+Snakemake seems to:
+\begin{enumerate}
+  \item Start from the end to the beginning, looking for which paths to follow.
+  \item When the execution paths are known, it runs it in the forward direction from the beginning.
+\end{enumerate}
 
 \end{frame}
 
