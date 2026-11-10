@@ -161,7 +161,7 @@ def GatherPerl (wc):
       results.extend (d)  ##  Add it to the list
 
   ##  Print out the results
-  print (results)
+  print (results, file=sys.stderr)
 
   return results
 \end{lstlisting}
@@ -186,7 +186,7 @@ The {\texttt{print ()}} produces this:
 
 \begin{figure}
   \centering
-  {\fbox{\includegraphics[width=7cm]{finalex/dag-v6}}}
+  {\fbox{\includegraphics[width=9cm]{finalex/dag-v6}}}
 \end{figure}
 
 \end{frame}

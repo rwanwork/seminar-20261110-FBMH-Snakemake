@@ -13,7 +13,7 @@ def GatherPerl (wc):
       results.extend (d)  ##  Add it to the list
 
   ##  Print out the results
-  print (results)
+  print (results, file=sys.stderr)
 
   return results
 
