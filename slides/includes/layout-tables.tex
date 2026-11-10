@@ -1,0 +1,98 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  General
+
+%%  Table spacing
+\def\D{\hphantom{1}}
+\def\C{\hphantom{1,}}
+\def\E{\hphantom{\textless}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Requires additional packages
+
+%%  Multirow and multicolumn commands
+\newcommand{\mc}[2]{\multicolumn{#1}{c|}{#2}}
+\newcommand{\mr}[1]{\multirow{2}*{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Referencing tables
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\subtabref}[2]{Table~\ref{#1}{(#2)}}
+
+%%  Probably also want the xr package
+\newcommand{\supptabref}[1]{Table~S\ref{#1}}
+\newcommand{\suppsubtabref}[2]{Table~S\ref{#1}{(#2)}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Creating tables
+
+% arg1 = position
+% arg2 = column definition string (eg |cc|r|lp{2cm}||)
+% arg3 = column headings
+% arg4 = body of table
+% arg5 = caption
+% arg6 = label for the figure
+%
+\newcommand{\tab}[6]{%
+  \begin{table}[#1]
+    \centering
+      \caption{\label{#6}#5}%
+      \begin{tabular}{#2}%
+        \hline #3 \hline%
+        #4%
+        \hline%
+      \end{tabular}%
+  \end{table}
+}
+
+\newcommand{\tabx}[6]{%
+  \begin{table}[#1]
+    \centering
+      \caption{\label{#6}#5}%
+      \begin{tabularx}{\linewidth}{#2}%
+        \hline #3 \hline%
+        #4%
+        \hline%
+      \end{tabularx}%
+  \end{table}
+}
+
+\newcommand{\tabstar}[6]{%
+  \begin{table*}[#1]
+    \centering
+      \caption{\label{#6}#5}%
+      \begin{tabular}{#2}%
+        \hline #3 \hline%
+        #4%
+        \hline%
+      \end{tabular}%
+  \end{table*}
+}
+
+\newcommand{\tabxstar}[6]{%
+  \begin{table*}[#1]
+    \centering
+      \caption{\label{#6}#5}%
+      \begin{tabularx}{\linewidth}{#2}%
+        \hline #3 \hline%
+        #4%
+        \hline%
+      \end{tabularx}%
+  \end{table*}
+}
+
+\newcommand{\sidetab}[6]{%
+  \begin{sidewaystable}[#1]
+    \centering
+      \caption{\label{#6}#5}%
+      \begin{tabular}{#2}%
+      \hline #3 \hline%
+      #4%
+      \hline%
+      \end{tabular}%
+  \end{sidewaystable}
+}
+
+

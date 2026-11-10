@@ -1,0 +1,27 @@
+import pandas as pd
+
+from snakemake.utils import validate, min_version
+
+configfile: "config.yml"
+validate (config, schema = "config.schema.yml")
+
+fileslist_panda = pd.read_table (config["fileslist"], sep='\t', lineterminator='\n')
+fileslist_panda.set_index ("ID", drop=False, inplace=True)
+validate (fileslist_panda, schema="fileslist.schema.yml")
+
+##  Define global constraints on wildcards
+wildcard_constraints:
+  corpus = "calgary|canterbury"
+
+##  Include important variables
+include:  "global-vars.smk"
+
+include:  "single.smk"
+include:  "combine.smk"
+include:  "graphs.smk"
+
+##  Replacing canterbury.jpg with calgary.jpg will also work; can also put both!
+rule all:
+  input:
+    OUTPUT_DIR + "/05-graphs/canterbury.jpg"
+

@@ -1,0 +1,10 @@
+DATA_DIR = "../../data"
+OUTPUT_DIR = "Output"
+
+rule CountAlice:
+  input:  DATA_DIR + "/canterbury/alice29"
+  output:  OUTPUT_DIR + "/alice29.count"
+  shell:
+    """
+    cat {input} | head -n 1000 | wc -w -c >{output}
+    """

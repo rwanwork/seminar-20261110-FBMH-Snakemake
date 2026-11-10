@@ -1,0 +1,6 @@
+##  Data tables with additional configuration information
+fileslist:  "fileslist.tsv"
+
+my_options:
+  postscript:  "eps"
+

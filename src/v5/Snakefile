@@ -1,0 +1,18 @@
+DATA_DIR = "../../data"
+OUTPUT_DIR = "Output"
+
+rule CountAlice:
+  input:  DATA_DIR + "/canterbury/alice29"
+  output:  OUTPUT_DIR + "/alice29.count"
+  run:
+    with open (output[0], "w") as outfp:
+      with open (input[0]) as infp:
+        num_words = 0
+        num_chars = 0
+        for line in infp:
+          wordslist = line.split ()
+          num_words = num_words + len (wordslist)
+          num_chars += (sum (len (word) for word in wordslist))
+      outfp.write (str (num_words))
+      outfp.write ("\t")
+      outfp.write (str (num_chars) + "\t" + output[0] + "\n")

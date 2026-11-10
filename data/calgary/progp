@@ -1,0 +1,1024 @@
+program interval(input,output);
+{dataflow simulator for real interval arithmetic}
+
+const
+	IMem = 500; {number of instructions}
+	DMem = 200;  {number of interval variables allowed}
+	Par = 3;   {max number of paramters for an operator}
+	Maxexp = 10; Minexp = -9;
+	Maxinf =10000; Mininf =-10000; {Tied to values of Minman and Maxman}
+	Maxman = 9999; Minman = -9999; {cannot exceed sqrt(maxint)}
+	Splitman = 1000; {Smallest normalized mantisa}
+	Digits = 4; {number of digits in mantissa}
+
+type
+	Positive= 0..maxint;
+	State  = -1..99;  {Used for holding state of operator -1:done}
+	OpType = (print,pr,tr,soln,readr,halve,halves,linh,mult,add,intgr,
+less,leq,noteq,sqrr,minr,maxr,modu,absr,trig,expr,lb,ub,copy,stop); {!!}
+	Ptr    = 1..DMem;
+	Loc    = 1..IMem;
+	Loc0   = 0..IMem;
+	EdgeT  = (hout,lin,hin,lout); {Warning this order is important in}
+				      {predicates such as gtS,geS}
+	CardT  = (finite,infinite);
+	ExpT   = Minexp..Maxexp;
+	ManT   = Mininf..Maxinf; 
+	Pflag  = (PNull,PSoln,PTrace,PPrint);
+	Sreal  = record
+		    edge:EdgeT;
+		    cardinality:CardT;
+		    exp:ExpT; {exponent}
+		    mantissa:ManT;
+		 end;
+	Int    = record
+		    hi:Sreal;
+		    lo:Sreal;
+	 end;
+	Instr  = record
+		    Code:OpType;
+		    Pars: array[0..Par] of 0..DMem;
+		 end;
+	DataMem= record
+		    D        :array [Ptr] of Int;
+		    S        :array [Loc] of State;
+		    LastHalve:Loc;
+		    RHalve   :array [Loc] of real;
+		 end;
+	DataFlags=record
+		    PF	     :array [Ptr] of Pflag;
+		 end;
+var
+	Debug  : (none,activity,post,trace,dump);
+	Cut    : (once,all);
+	GlobalEnd,Verifiable:boolean;
+	HalveThreshold:real;
+	I      : array [Loc] of Instr; {Memory holding instructions}
+	End    : Loc; {last instruction in I}
+	ParN   : array [OpType] of -1..Par; {number of parameters for each 
+			opcode. -1 means no result}
+        ParIntersect : array [OpType] of boolean ;
+	DInit  : DataMem; {initial memory which is cleared and 
+				used in first call}
+	DF     : DataFlags; {hold flags for variables, e.g. print/trace}
+	MaxDMem:0..DMem;
+	Shift  : array[0..Digits] of 1..maxint;{array of constant multipliers}
+						{used for alignment etc.}
+	Dummy  :Positive;
+	{constant intervals and Sreals}
+	PlusInfS,MinusInfS,PlusSmallS,MinusSmallS,ZeroS,
+	PlusFiniteS,MinusFiniteS:Sreal;
+	Zero,All,AllFinite:Int;
+
+procedure deblank;
+var Ch:char;
+begin
+   while (not eof) and (input^ in [' ','	']) do read(Ch);
+end;
+
+procedure InitialOptions;
+
+#include '/user/profs/cleary/bin/options.i';
+
+   procedure Option;
+   begin
+      case Opt of
+      'a','A':Debug:=activity;
+      'd','D':Debug:=dump;
+      'h','H':HalveThreshold:=StringNum/100;
+      'n','N':Debug:=none;
+      'p','P':Debug:=post;
+      't','T':Debug:=trace;
+      'v','V':Verifiable:=true;
+      end;
+   end;
+
+begin
+   Debug:=trace;
+   Verifiable:=false;
+   HalveThreshold:=67/100;
+   Options;
+   writeln(Debug);
+   writeln('Verifiable:',Verifiable);
+   writeln('Halve threshold',HalveThreshold);
+end;{InitialOptions}
+
+procedure NormalizeUp(E,M:integer;var S:Sreal;var Closed:boolean);
+begin
+with S do
+begin
+   if M=0 then S:=ZeroS else
+   if M>0 then
+   begin
+      while M>=Maxinf do
+      begin 
+	 if M mod 10 > 0 then begin Closed:=false;M:=(M div 10)+1 end
+	 else M:=M div 10;
+	 E:=E+1;
+      end;
+	 
+      while M < Maxinf div 10 do
+      begin M:=M*10; E:=E-1; 
+      end;
+
+      if E > Maxexp then {overflow-set to infinity}
+      begin 
+	 S:=PlusInfS;
+	 Closed:=false;
+      end else
+      if E < Minexp then {underflow-set to smallest positive value}
+      begin 
+         S:=PlusSmallS;
+         Closed:=false;
+      end else
+      begin cardinality:=finite;exp:=E;mantissa:=M;
+      end;
+   end else	 
+   if M < 0 then
+   begin
+      while M <= Mininf do
+      begin 
+	 if M mod 10 < 0 then Closed:=false else
+	 if M mod 10 > 0 then halt;
+	 M:=M div 10;
+	 E:=E+1;
+      end;
+	 
+      while M > (Mininf div 10) do
+      begin M:=M*10; E:=E-1; 
+      end;
+
+      if E > Maxexp then {overflow-set to most negative value}
+      begin 
+         S:=MinusFiniteS;
+         Closed:=false;
+      end 
+      else
+      if E < Minexp then {underflow-set to zero}
+      begin
+         S:=ZeroS;
+         Closed:=false;
+      end else
+      begin
+         cardinality:=finite;exp:=E;mantissa:=M;
+      end;
+   end;
+end;
+end;{NormalizeUp}
+
+procedure NormalizeDn(E,M:integer;var S:Sreal;var Closed:boolean);
+begin
+with S do
+begin
+   if M=0 then S:=ZeroS else
+   if M>0 then
+   begin
+      while M >= Maxinf do
+      begin 
+	 if M mod 10 > 0 then Closed:=false else
+	 if M mod 10 < 0 then halt;
+	 M:=M div 10;
+	 E:=E+1;
+      end;
+	 
+      while (M < Maxinf div 10) do
+      begin M:=M*10; E:=E-1; 
+      end;
+
+      if E > Maxexp then {overflow-set to largest positive value}
+      begin 
+	 S:=PlusFiniteS;
+	 Closed:=false;
+      end else
+      if E < Minexp then {underflow-set to zero}
+      begin S:=ZeroS; Closed:=false;
+      end else
+      begin cardinality:=finite;exp:=E;mantissa:=M;
+      end;
+   end else	 
+   if M < 0 then
+   begin
+      while M <= Mininf do
+      begin 
+	 if M mod 10 < 0 then 
+	 begin Closed:=false; M:=M div 10 -1;end
+	 else 
+	 if M mod 10 = 0 then M:=M div 10 
+	 else halt;
+	 E:=E+1;
+      end;
+	 
+      while (M>Mininf div 10) do
+      begin M:=M*10; E:=E-1; 
+      end;
+
+      if E > Maxexp then {overflow}
+      begin 
+         S:=MinusInfS;
+         Closed:=false;
+      end 
+      else
+      if E < Minexp then {underflow}
+      begin S:=MinusSmallS; Closed:=false;
+      end else
+      begin
+         cardinality:=finite;exp:=E;mantissa:=M;
+      end;
+   end;
+end;
+end;{NormalizeDn}
+
+procedure WriteS(X:Sreal);
+var E,M:integer;
+begin
+with X do
+begin
+   case edge of
+   lin: write('[');
+   lout: write('(');
+   hin,hout:
+   end;
+   
+   case cardinality of
+   infinite: write('inf':Digits+4); 
+   finite: 
+      if mantissa = 0 then write(0:Digits+1,' ':3)
+      else begin
+         M:=mantissa;
+	 E:=exp; 
+         while (M mod 10 = 0) do
+	 begin M:=M div 10; E:=E+1;
+	 end;
+         write(M:Digits+1,'e',E-Digits:2);
+      end;
+   end;
+   
+   case edge of 
+   hin: write(']');
+   hout:write(')');
+   lin,lout:
+   end;
+end;
+end;{WriteS}
+
+procedure WriteInt(I:Int);
+begin
+   with I do begin WriteS(lo); write(','); WriteS(hi); end;
+end;{WriteInt}
+   
+procedure DumpS(X:Sreal);
+begin
+with X do
+   write(edge:4,cardinality:9,mantissa:7,exp:3);
+end;{DumpS}
+
+procedure DumpInt(I:Int);
+begin
+   with I do begin DumpS(lo); write(' || '); DumpS(hi); end;
+end;{DumpInt}
+   
+procedure ReadInt(var I:Int);
+
+var   Ch:char;
+      Cll,Clu:boolean;
+	
+   procedure ReadSUp(var X:Sreal; var Closed:boolean);
+   var E,M:integer;
+   begin
+      with X do
+      begin
+         deblank;
+         case input^ of
+         '~':begin X:=PlusInfS;read(Ch);
+	     end;
+         '-','+','0','1','2','3','4','5','6','7','8','9':
+	 begin
+	    cardinality:=finite;
+   	    read(M);
+	    read(E); E:=E+Digits;
+	    NormalizeUp(E,M,X,Closed);
+	 end;
+	 end;{case}
+      end;
+   end;{ReadSUp}
+
+   procedure ReadSDn(var X:Sreal; var Closed:boolean);
+   var E,M:integer;
+       Ch:char;
+   begin
+      with X do
+      begin
+         deblank;
+         case input^ of
+         '~':begin X:=MinusInfS;read(Ch);
+	     end;
+         '-','+','0','1','2','3','4','5','6','7','8','9':
+	 begin
+	    cardinality:=finite;
+   	    read(M);
+	    read(E); E:=E+Digits;
+	    NormalizeDn(E,M,X,Closed);
+	 end;
+	 end;{case}
+      end;
+   end;{ReadSDn}
+begin{ReadInt}
+   with I do 
+   begin 
+      deblank; read(Ch); 
+      case Ch of
+      '[':Cll:=true;
+      '(':Cll:=false;
+      end;
+      ReadSDn(lo,Cll);if Cll then lo.edge:=lin else lo.edge:=lout;
+      deblank;
+      read(Ch); assert(Ch=',');
+      Clu:=true;
+      ReadSUp(hi,Clu);
+      deblank;
+      read(Ch);
+      case Ch of
+      ']':if Clu then hi.edge:=hin else hi.edge:=hout;
+      ')':hi.edge:=hout;
+      end;
+   end;
+end;{ReadInt}
+   
+procedure DumpTables;
+var tL:Loc; tPar:0..Par; tOp:OpType;
+begin
+	for tOp := print to stop do
+	   writeln(tOp:6,ParN[tOp]:2);
+	writeln;
+
+	for tL := 1 to End do
+	with I[tL] do
+	begin
+	   write(Code:5);
+	   for tPar := 0 to Par do
+	      if Pars[tPar] <> 0 then write(Pars[tPar]:4);
+	   writeln;
+	end;
+	writeln('number of memory locations used:',MaxDMem:0);
+	writeln;
+end;{DumpTables}
+	
+procedure AlignUp
+   (E0:ExpT;M0:ManT;E1:ExpT;M1:ManT;var E,N0,N1:integer;var Closed:boolean);
+{Align mantissas M0,M1 preserving accuracy and rounding up wherever possible}
+{common resulting exponents in E, and mantissas in N0,N1}
+var D:Positive;
+begin
+   if M0=0 then begin E:=E1;N0:=0;N1:=M1;end else
+   if M1=0 then begin E:=E0;N0:=M0;N1:=0;end else
+   if E0=E1 then
+   begin E:=E0; N0:=M0; N1:=M1;
+   end else
+   if (E0>E1) then AlignUp(E1,M1,E0,M0,E,N1,N0,Closed) else
+   begin
+      D:=E1-E0;
+      if D>= 2*Digits then
+      begin 
+         N1:=M1*Maxinf; E:=E1-Digits;
+	 if M0<0 then N0:=0 else N0:=1;
+	 Closed:=false;
+      end else
+      if D > Digits then
+      begin 
+         N1:=M1*Maxinf; E:=E1-Digits; 
+	 if (M0 mod Shift[D-Digits]) = 0 
+	 then N0:=(M0 div Shift[D-Digits])
+	 else
+	    if M0 > 0 then N0:=(M0 div Shift[D-Digits])+1
+	              else N0:=(M0 div Shift[D-Digits]);
+      end else
+      {Digits>=D>=0}
+      begin N1:=M1*Shift[D]; E:=E1-D; N0:=M0;
+      end;
+   end;
+end;{AlignUp}
+
+function gtS(X,Y:Sreal):boolean;
+{X>Y  careful need to be able to compare x] and (x etc.}
+var gt:boolean;
+begin
+   if (X.exp=Y.exp)and(X.mantissa=Y.mantissa) then gt:=X.edge>Y.edge else
+   if X.exp = Y.exp then gt:= (X.mantissa > Y.mantissa) else
+   if X.mantissa = 0 then gt:= 0 > Y.mantissa else
+   if Y.mantissa = 0 then gt:= X.mantissa > 0 else
+   if (X.mantissa>0) and (Y.mantissa>0) then gt:= (X.exp > Y.exp) else
+   if (X.mantissa>0) and (Y.mantissa<0) then gt:= true else
+   if (X.mantissa<0) and (Y.mantissa>0) then gt:= false else
+   if (X.mantissa<0) and (Y.mantissa<0) then gt:= (X.exp < Y.exp) 
+   else  writeln('error in gtS');
+   
+   gtS:=gt;
+end;{gtS}
+   
+function geS(X,Y:Sreal):boolean;
+{X>=Y  careful need to be able to compare x] and (x etc.}
+begin
+   if (X.exp=Y.exp)and(X.mantissa=Y.mantissa) then geS:=X.edge>=Y.edge else
+   if X.exp = Y.exp then geS:= (X.mantissa >= Y.mantissa) else
+   if X.mantissa = 0 then geS:= 0 >= Y.mantissa else
+   if Y.mantissa = 0 then geS:= X.mantissa >= 0 else
+   if (X.mantissa>0) and (Y.mantissa>0) then geS:= (X.exp > Y.exp) else
+   if (X.mantissa>0) and (Y.mantissa<0) then geS:= true else
+   if (X.mantissa<0) and (Y.mantissa>0) then geS:= false else
+   if (X.mantissa<0) and (Y.mantissa<0) then geS:= (X.exp < Y.exp) 
+   else  writeln('error in geS');
+end;{geS}
+   
+function Point(X:Int):boolean;
+{X=[x,x]}
+begin
+with X do
+   Point:=(lo.edge=lin)and (hi.edge=hin) and 
+	  (lo.mantissa=hi.mantissa) and
+	  (lo.exp=hi.exp);
+end;{Point}
+
+procedure maxS(X,Y:Sreal;var max:Sreal);
+begin
+	if gtS(X,Y) then max:=X else max:=Y;
+end;
+
+procedure minS(X,Y:Sreal;var min:Sreal);
+begin
+	if gtS(X,Y) then min:=Y else min:=X;
+end;
+
+procedure Inter(P,Q:Int;var R:Int);
+begin
+   minS(P.hi,Q.hi,R.hi);
+   maxS(P.lo,Q.lo,R.lo);
+end;
+
+function CheckHi(X:Sreal):boolean;
+var OK:boolean;
+begin
+   OK:=true;
+   with X do
+   begin
+      case cardinality of
+      infinite:
+         if (exp=Maxexp)and(mantissa=Maxinf) then
+	 else writeln('**Invalid hi infinity');
+      finite:
+      begin
+         if (mantissa=Maxinf) or (mantissa=Mininf) then
+	 begin OK:=false; writeln('**Invalid finite value - hi');
+	 end;
+	 
+         if mantissa = 0 then
+	    if (exp=0) then 
+	    else 
+	    begin OK:=false; writeln('**Invalid zero - hi')
+	    end
+	 else
+	 begin
+	    if (mantissa > 0) then
+	       if mantissa >= (Maxinf div 10) then {OK}
+	       else 
+	       begin OK:=false; writeln('**Incorrect normalization - hi') 
+	       end
+	    else{mantissa<0}
+	       if mantissa > (Mininf div 10) then
+	       begin OK:=false; writeln('**Incorrect normalization - hi') 
+	       end;
+	 end;
+      end;
+      end;{case}
+
+      if not (edge in [hin,hout]) then
+      begin
+         OK:=false;
+	 writeln('**hi edge value incorrect');
+      end;
+   end;
+   
+   CheckHi:=OK;
+end;{CheckHi}
+  
+function CheckLo(X:Sreal):boolean;
+var OK:boolean;
+begin
+   OK:=true;
+   with X do
+   begin
+      case cardinality of
+      infinite:
+         if (exp=Maxexp)and(mantissa=Mininf) then
+	 else writeln('**Invalid lo infinity');
+      finite:
+      begin
+         if (mantissa=Maxinf) or (mantissa=Mininf) then
+	 begin OK:=false; writeln('**Invalid finite value - hi');
+	 end;
+	 
+         if mantissa = 0 then
+	    if (exp=0) then 
+	    else 
+	    begin OK:=false; writeln('**Invalid zero - lo')
+	    end
+	 else
+	 begin
+	       if (mantissa > 0) then
+	          if mantissa >= (Maxinf div 10) then{OK}
+		  else 
+		  begin OK:=false; writeln('**Incorrect normalization - lo') 
+		  end
+	       else{mantissa<0}
+	          if mantissa > (Mininf div 10) then
+		  begin OK:=false; writeln('**Incorrect normalization - lo') 
+		  end;
+	 end;
+      end;
+      end;{case}
+
+      if not (edge in [lin,lout]) then
+      begin
+         OK:=false;
+	 writeln('**lo edge value incorrect');
+      end;
+   end;
+   
+   CheckLo:=OK;
+end;{CheckLo}
+  
+function CheckInt(I:Int):boolean;
+var OK:boolean;
+begin
+   OK:=CheckHi(I.hi) and CheckLo(I.lo);
+   if gtS(I.lo,I.hi) then
+   begin
+      OK:=false;
+      writeln('**Limits out of order');
+   end;
+
+   if not OK then 
+   begin writeln('**Error in Check'); DumpInt(I);
+   end;
+   
+   CheckInt:=OK;
+end;
+
+procedure DumpMem(var DCurr:DataMem);
+var tD:Ptr; tL:Loc;
+begin
+   with DCurr do
+   begin
+        writeln('LastHalve:',LastHalve:0);
+	
+    	for tL:= 1 to End do
+	   writeln(tL:3,S[tL]:2,RHalve[tL]);
+	writeln;
+	
+	for tD:= 1 to MaxDMem do 
+	begin 
+	   write(tD:5);
+	   DumpInt(D[tD]);
+	   assert(CheckInt(D[tD]));
+	   writeln;
+	end;
+	writeln;
+   end;
+end;{DumpMem}
+
+procedure WriteMem(var DCurr:DataMem);
+var tD:Ptr; 
+begin
+   with DCurr do
+   begin
+	for tD:= 1 to MaxDMem do 
+	if (DF.PF[tD] > PNull) or (Debug > activity) then
+	begin 
+	   write(tD:5);
+	   WriteInt(D[tD]);
+	   writeln;
+	end;
+	writeln;
+   end;
+end;{WriteMem}
+
+procedure OuterExec
+(PC:Loc0;DCurr:DataMem;Change:boolean;First:State;
+ var OldCounter:Positive;Level:Positive);
+
+var Counter:Positive;
+    Fail,AllPoints,LocalChange:boolean;
+
+procedure NewOuter(F:State);
+begin OuterExec(PC,DCurr,Change,F,Counter,Level+1);
+end;
+
+{!!}
+procedure execprint(PC:Loc; L:Ptr; R0:Int);
+begin
+   DF.PF[L]:=PSoln;
+   writeln;
+   write(PC:3,L:5);
+   WriteInt(R0);
+   writeln;
+end;
+
+procedure execpr(var Sr:State; L:Ptr);
+begin
+   Sr:=-1; DF.PF[L]:=PPrint;
+end;{execpr}
+
+procedure exectr(var Sr:State; L:Ptr);
+begin
+   Sr:=-1; DF.PF[L]:=PTrace;
+end;{exectr}
+
+procedure execsoln(var Sr:State; L:Ptr);
+begin
+   Sr:=-1; DF.PF[L]:=PSoln;
+end;{execsoln}
+
+procedure execreadr(var Sr:State;var R0:Int);
+begin
+   writeln;
+   write('<<');
+   ReadInt(R0);
+   Sr:=-1;
+end;
+
+function GetReal(E,M:integer):real;
+{convert E-exponent,M-mantissa into genuine Pascal real number}
+var x:real;
+begin
+   x:=M/Maxinf;
+   while E>0 do begin x:=x*10; E:=E-1; end; 
+   while E<0 do begin x:=x/10; E:=E+1; end;
+   GetReal:=x; 
+end;{GetReal} 
+   
+procedure Ratio(Lo,Hi:Sreal;var ERat,MRat:integer); 
+{compute ratio of Hi to Lo in exponent mantissa form}
+begin
+   if Lo.mantissa=0 then
+   begin{treat zero as if smallest possible positive number}
+      ERat:=Hi.exp-Minexp;
+      MRat:=Hi.mantissa*10;
+   end else
+   if Hi.mantissa=0 then
+   begin{treat zero as if smallest possible negative number}
+      ERat:=Minexp-Lo.exp;
+      MRat:=Lo.mantissa*10;
+   end
+   else begin
+      ERat:=Hi.exp-Lo.exp;
+      MRat:=(Hi.mantissa*Maxinf) div Lo.mantissa;
+   end;
+end;{Ratio}
+    
+function Adjacent(X:Int):boolean;
+{are hi and lo bounds adjacent points}
+begin
+   with X do
+   if (hi.mantissa=0) or (lo.mantissa=0) then
+      Adjacent:=
+         ((hi.mantissa=0)and(lo.mantissa=Mininf div 10)and(lo.exp=Minexp)) or
+         ((lo.mantissa=0)and(hi.mantissa=Maxinf div 10)and(hi.exp=Minexp)) 
+   else
+      Adjacent:=
+         ((lo.exp=hi.exp)and(lo.mantissa+1=hi.mantissa)) or
+	 ((hi.exp=lo.exp+1)and(hi.mantissa=(lo.mantissa div 10)+1)) or
+	 ((hi.exp=lo.exp-1)and((hi.mantissa div 10)-1=lo.mantissa));
+end;{Adjacent}
+
+procedure exechalve
+   (var PC:Loc0;var Sr:State;var R0:Int;var OK:boolean;var Change:boolean);
+{Reduce range of R0 (suceeds twice for two 'halves')}
+
+var EDiff,MDiff,ERat,MRat,MidE,MidM,M0,M1,HiM,HiE:integer;
+    Dummy:boolean;
+    Mid:Sreal;
+    R,D:real;
+    OldPC:Loc;
+   
+    procedure AtEnd;{What to do afer a successful halve}
+    begin  
+	DCurr.LastHalve:=PC; PC:=0; Sr:=0;
+    end;
+
+begin{exechalve}
+OldPC:=PC;
+with R0 do
+ begin
+      if DCurr.LastHalve >= PC then {not our turn yet} else
+      if (lo.mantissa = hi.mantissa) and (lo.exp=hi.exp) and
+         (lo.edge=lin) and (hi.edge=hin)
+      then {single point cant be divided} Sr:=-1 
+      else
+      if Adjacent(R0) and 
+	 (((lo.edge=lout) and (hi.edge=hout)) or
+	  ((lo.cardinality=infinite)and(hi.edge=hout)) or 
+	  ((hi.cardinality=infinite)and(lo.edge=lout))
+	 )
+      then Sr:=-1
+      else
+      if Sr=0 then
+         begin
+            AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+            MDiff:=M0+M1;
+	    D:=GetReal(EDiff,MDiff);
+	    if D < DCurr.RHalve[PC]*HalveThreshold 
+	    then {already narrowed enough dont bother} 
+	       Change:=true {otherwise can terminate too early}
+	    else begin
+	       DCurr.RHalve[PC]:=D;
+               NewOuter(1);
+               NewOuter(2);
+	       OK:=false;{fail after both alternatives tried}
+	    end
+         end
+   else{Sr=1,2}
+   if Adjacent(R0)
+   then begin{two adjacent points - needs special care}
+      if (hi.edge=hin) and (hi.cardinality=finite) then
+      begin
+         case Sr of
+	 1:hi.edge:=hout;
+	 2:begin lo:=hi; lo.edge:=lin;
+	   end;
+	 end;
+
+         AtEnd;
+      end
+      else if (lo.edge=lin) and (lo.cardinality=finite) then 
+      begin
+         case Sr of
+	 1:begin hi:=lo; hi.edge:=hin;
+	   end;
+	 2:lo.edge:=lout;
+	 end;
+         AtEnd;
+      end else {cant be narrowed} Sr:=-1;
+
+   end{adjacent} else
+   begin
+      if (lo.mantissa < 0) and (hi.mantissa > 0) then
+      begin
+         MidM:=0; MidE:=0;
+      end else
+      begin
+         Ratio(lo,hi,ERat,MRat);
+         if MRat < 0 then MRat:=-MRat;
+         R:=GetReal(ERat,MRat);
+(*writeln(ERat,MRat,R);*)
+         AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+         MDiff:=M0+M1;
+         if (R > 4) or (R < 0.25) then
+         begin{divide hi by sqrt of ratio to get midpoint}
+	    if hi.mantissa = 0 
+	    then begin HiM:=Mininf div 10; HiE:=Minexp;
+	    end else
+	    begin HiM:=hi.mantissa; HiE:=hi.exp;
+	    end;
+	    if ERat < 0 then MidE:=HiE-((ERat-1) div 2)
+	 	        else MidE:=HiE-(ERat div 2);
+	    if odd(ERat) 
+	       then MidM:=trunc(HiM*(Maxinf div 100)/sqrt(MRat*10))
+	       else MidM:=trunc(HiM*(Maxinf div 100)/sqrt(MRat));
+(*writeln(MidE,MidM);*)
+         end else
+         begin{take (hi+lo)/2 as midpoint}
+            MidM:=MDiff div 2 - M1;
+	    MidE:=EDiff;
+         end;
+      end;
+      if MidM >= 0 then NormalizeDn(MidE,MidM,Mid,Dummy)
+      		   else NormalizeUp(MidE,MidM,Mid,Dummy);
+      case Sr of
+      1:begin hi:=Mid; hi.edge:=hout;
+        end;
+      2:begin lo:=Mid; lo.edge:=lin;
+        end;
+      end;
+(*DumpInt(R0);writeln;*)
+      AtEnd;
+   end;{if Sr}
+
+   AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+   MDiff:=M0+M1;
+   DCurr.RHalve[OldPC]:=GetReal(EDiff,MDiff);
+
+ end;{with}
+end;{exechalve}
+
+procedure exechalves
+   (var PC:Loc0;var Sr:State;var R0:Int;var OK:boolean;var Change:boolean);
+{Reduce range of R0 (suceeds twice for two 'halves')}
+{Simple version thats averages exponents}
+
+var EDiff,MDiff,ERat,MRat,MidE,MidM,M0,M1,HiM,HiE:integer;
+    Dummy:boolean;
+    Mid:Sreal;
+    R,D:real;
+    OldPC:Loc;
+   
+    procedure AtEnd;{What to do afer a successful halve}
+    begin  
+	DCurr.LastHalve:=PC; PC:=0; Sr:=0;
+    end;
+
+    procedure Average(Lo,Hi:Sreal;var Exp:integer);
+    {compute average of exponents allowing for zero}
+    {infinities happen to work because of representation}
+    var Le,He:integer;
+    begin
+       if Lo.mantissa = 0 then
+	  Le := Minexp
+       else
+	  Le := Lo.exp;
+       if Hi.mantissa = 0 then
+	  He := Minexp
+       else
+	  He := Hi.exp;
+       Exp:= (He + Le - 2*Minexp) div 2 + Minexp;
+writeln(Exp,Hi.exp,Lo.exp,Minexp,He,Le);
+    end;{Average}
+
+begin{exechalves}
+OldPC:=PC;
+with R0 do
+ begin
+      if DCurr.LastHalve >= PC then {not our turn yet} else
+      if (lo.mantissa = hi.mantissa) and (lo.exp=hi.exp) and
+         (lo.edge=lin) and (hi.edge=hin)
+      then {single point cant be divided} Sr:=-1 
+      else
+      if Adjacent(R0) and 
+	 (((lo.edge=lout) and (hi.edge=hout)) or
+	  ((lo.cardinality=infinite)and(hi.edge=hout)) or 
+	  ((hi.cardinality=infinite)and(lo.edge=lout))
+	 )
+      then Sr:=-1
+      else
+      if Sr=0 then
+         begin
+            AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+            MDiff:=M0+M1;
+	    D:=GetReal(EDiff,MDiff);
+	    if D < DCurr.RHalve[PC]*HalveThreshold 
+	    then {already narrowed enough dont bother} 
+	       Change:=true {otherwise can terminate too early}
+	    else begin
+	       DCurr.RHalve[PC]:=D;
+               NewOuter(1);
+               NewOuter(2);
+	       OK:=false;{fail after both alternatives tried}
+	    end
+         end
+   else{Sr=1,2}
+   if Adjacent(R0)
+   then begin{two adjacent points - needs special care}
+      if (hi.edge=hin) and (hi.cardinality=finite) then
+      begin
+         case Sr of
+	 1:hi.edge:=hout;
+	 2:begin lo:=hi; lo.edge:=lin;
+	   end;
+	 end;
+
+         AtEnd;
+      end
+      else if (lo.edge=lin) and (lo.cardinality=finite) then 
+      begin
+         case Sr of
+	 1:begin hi:=lo; hi.edge:=hin;
+	   end;
+	 2:lo.edge:=lout;
+	 end;
+         AtEnd;
+      end else {cant be narrowed} Sr:=-1;
+
+   end{adjacent} else
+   begin
+      if (lo.mantissa < 0) and (hi.mantissa > 0) then
+      begin
+         MidM:=0; MidE:=0;
+      end else
+      begin
+         Ratio(lo,hi,ERat,MRat);
+(*writeln(ERat,MRat,R);*)
+         AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+         MDiff:=M0+M1;
+         if (ERat > 1) or (ERat < -1) then
+         begin{Average exponents}
+	    if hi.mantissa <= 0 
+	    then begin MidM:= -Splitman;
+	    end else
+	    begin MidM:= Splitman; assert(lo.mantissa >= 0);
+	    end;
+            Average(lo,hi,MidE);
+         end else
+         begin{take (hi+lo)/2 as midpoint}
+            MidM:=MDiff div 2 - M1;
+	    MidE:=EDiff;
+         end;
+      end;
+      if MidM >= 0 then NormalizeDn(MidE,MidM,Mid,Dummy)
+      		   else NormalizeUp(MidE,MidM,Mid,Dummy);
+      case Sr of
+      1:begin lo:=Mid; lo.edge:=lin;
+        end;
+      2:begin hi:=Mid; hi.edge:=hout;
+        end;
+      end;
+(*DumpInt(R0);writeln;*)
+      AtEnd;
+   end;{if Sr}
+
+   AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+   MDiff:=M0+M1;
+   DCurr.RHalve[OldPC]:=GetReal(EDiff,MDiff);
+
+ end;{with}
+end;{exechalves}
+
+procedure execlinh
+   (var PC:Loc0;var Sr:State;var R0:Int;var OK:boolean;var Change:boolean);
+{Reduce range of R0 (suceeds twice for two 'halves')}
+
+var EDiff,MDiff,MidE,MidM,M0,M1:integer;
+    Dummy:boolean;
+    Mid:Sreal;
+    D:real;
+    OldPC:Loc;
+   
+    procedure AtEnd;{What to do afer a successful halve}
+    begin  
+	DCurr.LastHalve:=PC; PC:=0; Sr:=0;
+    end;
+
+begin{execlinh}
+OldPC:=PC;
+with R0 do
+ begin
+      if DCurr.LastHalve >= PC then {not our turn yet} else
+      if (lo.mantissa = hi.mantissa) and (lo.exp=hi.exp) and
+         (lo.edge=lin) and (hi.edge=hin)
+      then {single point cant be divided} Sr:=-1 
+      else
+      if Adjacent(R0) and 
+	 (((lo.edge=lout) and (hi.edge=hout)) or
+	  ((lo.cardinality=infinite)and(hi.edge=hout)) or 
+	  ((hi.cardinality=infinite)and(lo.edge=lout))
+	 )
+      then Sr:=-1
+      else
+      if Sr=0 then
+         begin
+            AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+            MDiff:=M0+M1;
+	    D:=GetReal(EDiff,MDiff);
+	    if D < DCurr.RHalve[PC]*HalveThreshold
+	    then {already narrowed enough dont bother} 
+	       Change:=true {otherwise possible to terminate early}
+	    else begin
+	       DCurr.RHalve[PC]:=D;
+               NewOuter(1);
+               NewOuter(2);
+	       OK:=false;{fail after both alternatives tried}
+	    end
+         end
+   else{Sr=1,2}
+   if Adjacent(R0)
+   then begin{two adjacent points - needs special care}
+      if (hi.edge=hin) and (hi.cardinality=finite) then
+      begin
+         case Sr of
+	 1:begin lo:=hi; lo.edge:=lin;
+	   end;
+	 2:hi.edge:=hout;
+	 end;
+         AtEnd;
+      end
+      else if (lo.edge=lin) and (lo.cardinality=finite) then 
+      begin
+         case Sr of
+	 1:lo.edge:=lout;
+	 2:begin hi:=lo; hi.edge:=hin;
+	   end;
+	 end;
+         AtEnd;
+      end else {cant be narrowed} Sr:=-1;
+   end{adjacent} else
+   begin
+      if (lo.mantissa < 0) and (hi.mantissa > 0) then
+      begin
+         MidM:=0; MidE:=0;
+      end else
+      begin
+         AlignUp(hi.exp,hi.mantissa,lo.exp,-lo.mantissa,EDiff,M0,M1,Dummy);
+         MDiff:=M0+M1;
+         MidM:=MDiff div 2 - M1;
+	 MidE:=EDiff;
+      end;
+      if MidM >= 0 then NormalizeDn(MidE,MidM,Mid,Dummy)
+      		   else NormalizeUp(MidE,MidM,Mid,Dummy);
+      case Sr of

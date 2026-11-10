@@ -1,0 +1,233 @@
+\documentclass[11pt,aspectratio=43,xcolor=dvipsnames]{beamer}
+% Uses fontspec - assumes compiled with LuaLaTeX or similar
+% The above \documentclass is for making slides. If making handouts use:
+%\documentclass[11pt,a4paper]{article}
+
+% See https://github.com/CASSON-LAB/uom_beamer_template
+% for details on license, further useage information and similar
+
+
+%%%%%%%%%%%%%%%%%% DOCUMENT SETUP %%%%%%%%%%%%%%%%%%
+\mode<presentation>
+
+% Presentation settings
+\mode<presentation>{
+  \usetheme[framenumber,titleframestart=1]{UoM_alex}
+  \usefonttheme{professionalfonts} % using non standard fonts for beamer
+  \usefonttheme{serif}             % set font to Arial
+  \usepackage{fontspec}
+  \setmainfont[Ligatures=TeX]{Arial}
+}
+
+% Handout settings
+\mode<article>{
+  \usepackage{fullpage}                  % use full page
+  \usepackage{fontspec}                  % set font to Arial
+    \setmainfont[Ligatures=TeX]{Arial}
+  \setlength{\parskip}{1.5\baselineskip} % correct beamer line spacings
+  \setlength{\parindent}{0cm}
+  \usepackage{enumitem}
+    \setlist[itemize]{topsep=0pt}
+  \definecolor{uomlinkblue}{HTML}{0071BC}
+}
+
+
+% Packages
+\usepackage{graphicx}  % for graphics files
+\graphicspath{
+{./imgs/}
+}
+
+\usepackage{xcolor}
+\usepackage{tikz}  %%  Load before ctable; \Smiles{}
+\usepackage{dirtree}
+\usepackage{listings}
+
+\usepackage{amsmath}   % assumes amsmath package installed
+  \allowdisplaybreaks[1] % allow eqnarrays to break across pages
+\usepackage{amssymb}   % assumes amsmath package installed
+\usepackage[document]{ragged2e} % left aligned text for accessibility
+\usepackage{pdfcomment} % for alt text for accessibility
+\usepackage{rotating}  % allow portrait figures and tables
+\usepackage{subfigure} % allow matrices of figures
+\usepackage{float}     % allows H option on floats to force here placement
+\usepackage{multirow}  % allows merging of rows in tables
+\usepackage{tabularx}  % allows fixed width tables
+\usepackage{ctable}    % modifies \hline for use in table
+\usepackage{bm}        % allow bold fonts in equations
+\usepackage{pgf}       % allow graphics manipulation
+\usepackage{media9}    % allow interactive flash files to be embedded
+  \addmediapath{../media}
+
+
+%%  Don't load the natbib package; it will conflict with this
+\usepackage[style=authoryear,backend=biber,natbib=true]{biblatex}
+\addbibresource{p.bib}
+
+\usepackage{hyperref} % add hyperlinks to document. Settings are for accessiblity
+  \hypersetup{
+    colorlinks=true,
+    linkcolor=uomlinkblue,
+    filecolor=uomlinkblue,
+    urlcolor=uomlinkblue,
+    pdflang={en-GB},
+}
+
+% \AtBeginSection{\frame{\sectionpage}}
+\AtBeginSection[] % Do nothing for \section*
+{
+\begin{frame}<beamer>
+  \frametitle{Outline}
+  \tableofcontents[currentsection]
+\end{frame}
+}
+\setbeamertemplate{footline}[frame number]
+
+%%  https://tex.stackexchange.com/questions/193380/hyperref-pageref-links-point-to-first-page
+\newcommand{\hlabel}{\phantomsection\label}
+
+%%  For lstlisting
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstset{language=C++,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{green}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#},
+  showspaces=false,
+  showstringspaces=false,
+  frame=single
+}
+
+\lstset{language=C,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{green}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#},
+  showspaces=false,
+  showstringspaces=false,
+  frame=single
+}
+
+\lstset{language=python}
+
+\input{includes/colour}
+\input{includes/smiles}
+\input{includes/layout-document}
+\input{includes/layout-tables}
+\input{includes/layout-text}
+
+% Source:  http://tex.stackexchange.com/questions/121525/how-to-make-directory->
+% The following is a dummy icon command
+\newcommand\myicon[1]{{\color{#1}\rule{2ex}{2ex}}}
+% If you have actual icon images, use \includegraphics to include them
+% If you are generating them, put in the appropriate code for them here
+% now we make a command for a folder/file which inserts the icon and its label
+% adjust this as needed. If you only have 2 icons, then you could create
+% a \myfile and \myfolder command with the icon fixed.
+\newcommand{\myfolder}[2]{\myicon{#1}\ {#2}}
+
+
+%%%%%%%%%%%%%%%%%% FRONT MATTER %%%%%%%%%%%%%%%%%%
+\title{Using Snakemake to develop workflows for bioinformatics analysis}
+%\subtitle{}
+\author{Raymond Wan\\Manchester Institute of Biotechnology \&\\Department of Physics and Astronomy}
+\date{10 November 2026}
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{intro}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{background}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{structure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{finalex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{tips}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{summary}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+
+\frametitle{Acknowledgements}
+
+\begin{itemize}
+  \item \LaTeX\  template for these slides due to {\href{https://github.com/Non-Invasive-Bioelectronics-Lab/uom_beamer_template}{Alex Casson}}, which in turn is due to \href{https://github.com/mundya/unofficial-university-of-manchester-beamer}{Andrew Mundy}.
+  \item QR code generation due to Adobe Express \href{https://www.adobe.com/express/feature/image/qr-code-generator}{web site}.
+  \item Image generation / conversion:  Gimp and Inkscape.
+  \item Test data files:  Calgary corpus \citep{bcw90:book} and Canterbury corpus \citep{ab97:dcc}.  Both were obtained from \href{https://corpus.canterbury.ac.nz/}{https://corpus.canterbury.ac.nz/}.
+\end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+
+\frametitle{Questions?}
+
+\begin{center}
+E-mail:  \href{mailto:raymond.wan@manchester.ac.uk}{raymond.wan@manchester.ac.uk}
+\end{center}
+
+Computational Biology at Manchester Teams; Scripting and Coding channel:
+\begin{figure}
+  \centering
+  \includegraphics[height=5cm]{qrcodes/teams-scripts}
+\end{figure}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+
+\frametitle{Questions?}
+
+\begin{figure}
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[height=5cm]{qrcodes/github} &
+    \includegraphics[height=5cm]{qrcodes/nar} \\
+    These slides & NAR paper \\
+  \end{tabular}
+\end{figure}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[allowframebreaks]
+
+\frametitle{References}
+
+\printbibliography
+
+\end{frame}
+
+
+\end{document}
+
+

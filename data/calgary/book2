@@ -1,0 +1,1024 @@
+.EQ
+delim $$
+.EN
+.CH "1  WHY SPEECH OUTPUT?"
+.ds RT "Why speech output?
+.ds CX "Principles of computer speech
+.pp
+Speech is our everyday, informal, communication medium.  But although we use
+it a lot, we probably don't assimilate as much information through our
+ears as we do through our eyes, by reading or looking at pictures and diagrams.
+You go to a technical lecture to get the feel of a subject \(em the overall
+arrangement of ideas and the motivation behind them \(em and fill in the details,
+if you still want to know them, from a book.  You probably find out more about
+the news from ten minutes with a newspaper than from a ten-minute news broadcast.
+So it should be emphasized from the start that speech output from computers is
+not a panacea.  It doesn't solve the problems of communicating with computers;
+it simply enriches the possibilities for communication.
+.pp
+What, then, are the advantages of speech output?  One good reason for listening
+to a radio news broadcast instead of spending the time with a newspaper
+is that you can listen while shaving, doing the housework, or driving the car.
+Speech leaves hands and eyes free for other tasks.
+Moreover, it is omnidirectional, and does not require a free line of sight.
+Related to this is the
+use of speech as a secondary medium for status reports and warning messages.
+Occasional interruptions by voice do not interfere with other activities,
+unless they demand unusual concentration, and people can assimilate spoken messages
+and queue them for later action quite easily and naturally.
+.pp
+The second key feature of speech communication stems from the telephone.
+It is the universality of the telephone receiver itself that is important
+here, rather than the existence of a world-wide distribution network;
+for with special equipment (a modem and a VDU) one does not need speech to take advantage of
+the telephone network for information transfer.
+But speech needs no tools other than the telephone, and this gives
+it a substantial advantage.  You can go into a phone booth anywhere in the world,
+carrying no special equipment, and have access to your computer within seconds.
+The problem of data input is still there:  perhaps your computer
+system has a limited word recognizer, or you use the touchtone telephone
+keypad (or a portable calculator-sized tone generator).  Easy remote access
+without special equipment is a great, and unique, asset to speech communication.
+.pp
+The third big advantage of speech output is that it is potentially very cheap.
+Being all-electronic, except for the loudspeaker, speech systems are well
+suited to high-volume, low-cost, LSI manufacture.  Other computer output
+devices are at present tied either to mechanical moving parts or to the CRT.
+This was realized quickly by the computer hobbies market, where speech output
+peripherals have been selling like hot cakes since the mid 1970's.
+.pp
+A further point in favour of speech is that it is natural-seeming and
+somehow cuddly when compared with printers or VDU's.  It would have been much
+more difficult to make this point before the advent of talking toys like
+Texas Instruments' "Speak 'n Spell" in 1978, but now it is an accepted fact that friendly
+computer-based gadgets can speak \(em there are talking pocket-watches
+that really do "tell" the time, talking microwave ovens, talking pinball machines, and,
+of course, talking calculators.
+It is, however, difficult to assess whether the appeal stems from
+mechanical speech's novelty \(em it
+is still a gimmick \(em and also to what extent it is tied up with
+economic factors.
+After all, most of the population don't use high-quality VDU's, and their major
+experience of real-time interactive computing is through the very limited displays
+and keypads provided on video games and teletext systems.
+.pp
+Articles on speech communication with computers often list many more advantages of voice output
+(see Hill 1971, Turn 1974, Lea 1980).
+.[
+Hill 1971 Man-machine interaction using speech
+.]
+.[
+Lea 1980
+.]
+.[
+Turn 1974 Speech as a man-computer communication channel
+.]
+For example, speech
+.LB
+.NP
+can be used in the dark
+.NP
+can be varied from a (confidential) whisper to a (loud) shout
+.NP
+requires very little energy
+.NP
+is not appreciably affected by weightlessness or vibration.
+.LE
+However, these either derive from the three advantages we have discussed above,
+or relate
+mainly to exotic applications in space modules and divers' helmets.
+.pp
+Useful as it is at present, speech output would be even more attractive if it could
+be coupled with speech input.  In many ways, speech input is its "big brother".
+Many of the benefits of speech output are even more striking for speech input.
+Although people can assimilate information faster through the eyes than the
+ears, the majority of us can generate information faster with the mouth than
+with the hands.  Rapid typing is a relatively uncommon skill, and even high
+typing rates are much slower than speaking rates (although whether we can
+originate ideas quickly enough to keep up with fast speech is another matter!)  To
+take full advantage of the telephone for interaction with machines, machine
+recognition of speech is obviously necessary.  A microwave oven, calculator,
+pinball machine, or alarm clock that responds to spoken commands is certainly
+more attractive than one that just generates spoken status messages.  A book
+that told you how to recognize speech by machine would undoubtedly be more
+useful than one like this that just discusses how to synthesize it!  But the
+technology of speech recognition is nowhere near as advanced as that of
+synthesis \(em it's a much more difficult problem.  However, because speech input
+is obviously complementary to speech output, and even very limited input
+capabilities will greatly enhance many speech output systems, it is worth
+summarizing the present state of the art of speech recognition.
+.pp
+Commercial speech recognizers do exist.  Almost invariably, they accept
+words spoken in isolation, with gaps of silence between them, rather than
+connected utterances.
+It is not difficult to discriminate with high accuracy up to a hundred
+different words spoken by the same speaker, especially if the vocabulary
+is carefully selected to avoid words which sound similar.  If several
+different speakers are to be comprehended, performance can be greatly improved
+if the machine is given an opportunity to calibrate their voices in a training
+session, and is informed at recognition time which one is to speak.
+With a large population of unknown speakers, accurate recognition is difficult
+for vocabularies of more than a few carefully-chosen words.
+.pp
+A half-way house between isolated word discrimination and recognition of connected
+speech is the problem of spotting known words in continuous speech.  This
+allows much more natural input, if the dialogue is structured as keywords
+which may be
+interspersed by unimportant "noise words".  To speak in truly isolated
+words requires a great deal of self-discipline and concentration \(em it is
+surprising how much of ordinary speech is accounted for by vague sounds
+like um's and aah's, and false starts.  Word spotting disregards these and so
+permits a more relaxed style of speech.  Some progress has been made on it in
+research laboratories, but the vocabularies that can be accomodated are still
+very small.
+.pp
+The difficulty of recognizing connected speech depends crucially on what is
+known in advance about the dialogue:  its pragmatic, semantic, and syntactic
+constraints.  Highly structured dialogues constrain very heavily the choice of
+the next word.  Recognizers which can deal with vocabularies of over 1000 words
+have been built in research laboratories, but the structure of the input has
+been such that the average "branching factor" \(em the size of the set out of
+which the next word must be selected \(em is only around 10 (Lea, 1980).
+.[
+Lea 1980
+.]
+Whether such
+highly constrained languages would be acceptable in many practical applications
+is a moot point.  One commercial recognizer, developed in 1978, can cope with
+up to five words spoken continuously from a basic 120-word vocabulary.
+.pp
+There has been much debate about whether it will ever be possible for a speech
+recognizer to step outside rigid constraints imposed on the utterances it can
+understand, and act, say, as an automatic dictation machine.  Certainly the most
+advanced recognizers to date depend very strongly on a tight context being
+available.  Informed opinion seems to accept that in ten years' time,
+voice data entry in the office will be an important and economically feasible
+prospect, but that it would be rash to predict the appearance of unconstrained
+automatic dictation by then.
+.pp
+Let's return now to speech output and take a look at some systems which use it,
+to illustrate the advantages and disadvantages of speech in practical
+applications.
+.sh "1.1  Talking calculator"
+.pp
+Figure 1.1 shows a calculator that speaks.
+.FC "Figure 1.1"
+Whenever a key is pressed,
+the device confirms the action by saying the key's name.
+The result of any computation is also spoken aloud.
+For most people, the addition of speech output to a calculator is simply a
+gimmick.
+(Note incidentally that speech
+.ul
+input
+is a different matter altogether.  The ability to dictate lists of numbers and
+commands to a calculator, without lifting one's eyes from the page, would have
+very great advantages over keypad input.)  Used-car
+salesmen find that speech output sometimes helps to clinch a deal:  they key in
+the basic car price and their bargain-basement deductions, and the customer is so
+bemused by the resulting price being spoken aloud to him by a machine that he
+signs the cheque without thinking!  More seriously, there may be some small
+advantage to be gained when keying a list of figures by touch from having their
+values read back for confirmation.  For blind people, however, such devices
+are a boon \(em and there are many other applications, like talking elevators
+and talking clocks, which benefit from even very restricted voice output.
+Much more sophisticated is a typewriter with audio feedback, designed by
+IBM for the blind.  Although blind typists can remember where the keys on a
+typewriter are without difficulty, they rely on sighted proof-readers to help
+check
+their work.  This device could make them more useful as office typists and
+secretaries.  As well as verbalizing the material (including punctuation)
+that has been typed, either by attempting to pronounce the words or by spelling
+them out as individual letters, it prompts the user through the more complex action sequences
+that are possible on the typewriter.
+.pp
+The vocabulary of the talking calculator comprises the 24 words of Table 1.1.
+.RF
+.nr x1 2.0i+\w'percent'u
+.nr x1 (\n(.l-\n(x1)/2
+.in \n(x1u
+.ta 2.0i
+zero	percent
+one	low
+two	over
+three	root
+four	em (m)
+five	times
+six	point
+seven	overflow
+eight	minus
+nine	plus
+times-minus	clear
+equals	swap
+.ta 0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i
+.in 0
+.FG "Table 1.1  Vocabulary of a talking calculator"
+This represents a total of about 13 seconds of speech.  It is stored
+electronically in read-only memory (ROM), and Figure 1.2 shows the circuitry
+of the speech module inside the calculator.
+.FC "Figure 1.2"
+There are three large integrated circuits.
+Two of them are ROMs, and the other is a special synthesis chip which decodes the
+highly compressed stored data into an audio waveform.
+Although the mechanisms used for storing speech by commercial devices are
+not widely advertised by the manufacturers, the talking calculator almost
+certainly uses linear predictive coding \(em a technique that we will examine
+in Chapter 6.
+The speech quality is very poor because of the highly compressed storage, and
+words are spoken in a grating monotone.
+However, because of the very small vocabulary, the quality is certainly good
+enough for reliable identification.
+.sh "1.2  Computer-generated wiring instructions"
+.pp
+I mentioned earlier that one big advantage of speech over visual output is that
+it leaves the eyes free for other tasks.
+When wiring telephone equipment during manufacture, the operator needs to use
+his hands as well as eyes to keep his place in the task.
+For some time tape-recorded instructions have been used for this in certain
+manufacturing plants.  For example, the instruction
+.LB
+.NI
+Red 2.5    11A terminal strip    7A tube socket
+.LE
+directs the operator to cut 2.5" of red wire, attach one end to a specified point
+on the terminal strip, and attach the other to a pin of the tube socket.  The
+tape recorder is fitted with a pedal switch to allow a sequence of such instructions
+to be executed by the operator at his own pace.
+.pp
+The usual way of recording the instruction tape is to have a human reader
+dictate them from a printed list.
+The tape is then checked against the list by another listener to ensure that
+the instructions are correct.  Since wiring lists are usually stored and
+maintained in machine-readable form, it is natural to consider whether speech
+synthesis techniques could be used to generate the acoustic tape directly by
+a computer (Flanagan
+.ul
+et al,
+1972).
+.[
+Flanagan Rabiner Schafer Denman 1972
+.]
+.pp
+Table 1.2 shows the vocabulary needed for this application.
+.RF
+.nr x1 2.0i+2.0i+\w'tube socket'u
+.nr x1 (\n(.l-\n(x1)/2
+.in \n(x1u
+.ta 2.0i +2.0i
+A	green	seventeen
+black	left	six
+bottom	lower	sixteen
+break	make	strip
+C	nine	ten
+capacitor	nineteen	terminal
+eight	one	thirteen
+eighteen	P	thirty
+eleven	point	three
+fifteen	R	top
+fifty	red	tube socket
+five	repeat coil	twelve
+forty	resistor	twenty
+four	right	two
+fourteen	seven	upper
+.ta 0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i
+.in 0
+.FG "Table 1.2  Vocabulary needed for computer-generated wiring instructions"
+It is rather larger
+than that of the talking calculator \(em about 25 seconds of speech \(em but well
+within the limits of single-chip storage in ROM, compressed by the linear
+predictive technique.  However, at the time that the scheme was investigated
+(1970\-71) the method of linear predictive coding had not been fully developed,
+and the technology for low-cost microcircuit implementation was not available.
+But this is not important for this particular application, for there is
+no need to perform the synthesis on a miniature low-cost computer system,
+nor need it
+be accomplished in real time.  In fact a technique of concatenating
+spectrally-encoded words was used (described in Chapter 7), and it was
+implemented on a minicomputer.  Operating much slower than real-time, the system
+calculated the speech waveform and wrote it to disk storage.  A subsequent phase
+read the pre-computed messages and recorded them on a computer-controlled analogue
+tape recorder.
+.pp
+Informal evaluation showed the scheme to be quite successful.  Indeed, the
+synthetic speech, whose quality was not high, was actually preferred to
+natural speech in the noisy environment of the production line, for each
+instruction was spoken in the same format, with the same programmed pause
+between the items.
+A list of 58 instructions of the form shown above was recorded and used
+to wire several pieces of apparatus without errors.
+.sh "1.3  Telephone enquiry service"
+.pp
+The computer-generated wiring scheme illustrates how speech can be used to give
+instructions without diverting visual attention from the task at hand.
+The next system we examine shows how speech output can make the telephone
+receiver into a remote computer terminal for a variety of purposes
+(Witten and Madams, 1977).
+.[
+Witten Madams 1977 Telephone Enquiry Service
+.]
+The caller employs the touch-tone keypad shown in Figure 1.3 for input, and the
+computer generates
+a synthetic voice response.
+.FC "Figure 1.3"
+Table 1.3 shows the process of making
+contact with the system.
+.RF
+.fi
+.nh
+.na
+.in 0.3i
+.nr x0 \w'COMPUTER:  '
+.nr x1 \w'CALLER:  '
+.in+\n(x0u
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Dials the service.
+.ti-\n(x0u
+COMPUTER:  Answers telephone.
+"Hello, Telephone Enquiry Service.  Please
+enter your user number".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters user number.
+.ti-\n(x0u
+COMPUTER:  "Please enter your password".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters password.
+.ti-\n(x0u
+COMPUTER:  Checks validity of password.
+If invalid, the user is asked to re-enter
+his user number.
+Otherwise,
+"Which service do you require?"
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters service number.
+.in 0
+.nf
+.FG "Table 1.3  Making contact with the telephone enquiry system"
+.pp
+Advantage is taken of the disparate speeds of input (keyboard) and
+output (speech) to hasten the dialogue by imposing a question-answer structure
+on it, with the computer taking the initiative.  The machine can
+afford to be slightly verbose if by so doing it makes the caller's
+response easier, and therefore more rapid.  Moreover, operators who
+are experienced enough with the system to anticipate questions can
+easily forestall them just by typing ahead, for the computer is programmed
+to examine its input buffer before issuing prompts and to suppress them if
+input has already been provided.
+.pp
+An important aim of the system is to allow application programmers with no
+special knowledge of speech to write independent services for it.
+Table 1.4 shows an example of the use of one such application program,
+.RF
+.fi
+.nh
+.na
+.in 0.3i
+.nr x0 \w'COMPUTER:  '
+.nr x1 \w'CALLER:  '
+.in+\n(x0u
+.ti-\n(x0u
+COMPUTER:  "Stores Information Service.  Please enter
+component name".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "SN7406#".
+.ti-\n(x0u
+COMPUTER:  "The component name is SN7406.  Is this correct?"
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "*1#" (system convention for "yes").
+.ti-\n(x0u
+COMPUTER:  "This component is in stores".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "*7#" (command for "price").
+.ti-\n(x0u
+COMPUTER:  "The component price is 35 pence".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "*8#" (command for "minimum number").
+.ti-\n(x0u
+COMPUTER:  "The minimum number of this component kept
+in stores is 10".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "SN7417#".
+.ti-\n(x0u
+COMPUTER:  "The component name is SN7417.  Is this correct?"
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "*1#".
+.ti-\n(x0u
+COMPUTER:  "This component is not in stores".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "*9#" (command for "delivery time").
+.ti-\n(x0u
+COMPUTER:  "The expected delivery time is 14 days".
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Enters "*0#".
+.ti-\n(x0u
+COMPUTER:  "Which service do you require?"
+.in 0
+.nf
+.FG "Table 1.4  The Stores Information Service"
+the
+Stores Information Service, which permits enquiries to be made of a database
+holding information on electronic components kept in stock.
+This subsystem is driven by
+.ul
+alphanumeric
+data entered on the touch-tone keypad.  Two or three letters are associated
+with each digit, in a manner which is fairly standard in touch-tone telephone
+applications.  These are printed on a card overlay
+that fits the keypad (see Figure 1.3).  Although true alphanumeric data entry
+would require a multiple key press for each character,
+the ambiguity inherent in
+a single-key-per-character convention can usually be resolved by the computer,
+if it has a list of permissible entries.  For example, the component names
+SN7406 and ZTX300 are read by the machine as "767406" and "189300", respectively.
+Confusion rarely occurs if the machine is expecting a valid component code.
+The same holds true of people's names, and file names \(em although with these
+one must take care not to identify a series of files by similar names, like
+TX38A, TX38B, TX38C.  It is easy for the machine to detect the rare cases
+where ambiguity occurs, and respond by requesting further information:  "The
+component name is SN7406.  Is this correct?"  (In fact, the Stores Information
+Service illustrated in Table 1.4 is defective in that it
+.ul
+always
+requests confirmation of an entry, even when no ambiguity exists.)  The
+use of a telephone keypad for data entry will be taken up again in Chapter 10.
+.pp
+A distinction is drawn throughout the system between data entries and
+commands, the latter being prefixed by a "*".  In this example, the
+programmer chose to define a command for each possible question about a
+component, so that a new component name can be entered at any time
+without ambiguity.  The price paid for the resulting brevity of dialogue
+is the burden of memorizing the meaning of the commands.  This is an
+inherent disadvantage of a one-dimensional auditory display over the
+more conventional graphical output:   presenting menus by speech is tedious and
+long-winded.  In practice, however, for a simple task such as the
+Stores Information Service it is quite convenient for the caller to
+search for the appropriate command by trying out all possibilities \(em there
+are only a few.
+.pp
+The problem of memorizing commands is alleviated by establishing some
+system-wide conventions.  Each input is terminated by a "#", and
+the meaning of standard commands is given in Table 1.5.
+.RF
+.fi
+.nh
+.na
+.in 0.3i
+.nr x0 \w'# alone  '
+.nr x1 \w'\(em  '
+.ta \n(x0u +\n(x1u
+.nr x2 \n(x0+\n(x1
+.in+\n(x2u
+.ti-\n(x2u
+*#	\(em	Erase this input line, regardless of what has
+been typed before the "*".
+.ti-\n(x2u
+*0#	\(em	Stop.  Used to exit from any service.
+.ti-\n(x2u
+*1#	\(em	Yes.
+.ti-\n(x2u
+*2#	\(em	No.
+.ti-\n(x2u
+*3#	\(em	Repeat question or summarize state of current
+transaction.
+.ti-\n(x2u
+# alone	\(em	Short form of repeat.  Repeats or summarizes
+in an abbreviated fashion.
+.ta 0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i
+.in 0
+.nf
+.FG "Table 1.5  System-wide conventions for the service"
+.pp
+A summary of services available on the system is given in
+Table 1.6.
+.RF
+.fi
+.na
+.in 0.3i
+.nr x0 \w'000  '
+.nr x1 \w'\(em  '
+.nr x2 \n(x0+\n(x1
+.in+\n(x2u
+.ta \n(x0u +\n(x1u
+.ti-\n(x2u
+\0\01	\(em	tells the time
+.ti-\n(x2u
+\0\02	\(em	Biffo (a game of NIM)
+.ti-\n(x2u
+\0\03	\(em	MOO (a game similar to that marketed under the name "Mastermind")
+.ti-\n(x2u
+\0\04	\(em	error demonstration
+.ti-\n(x2u
+\0\05	\(em	speak a file in phonetic format
+.ti-\n(x2u
+\0\06	\(em	listening test
+.ti-\n(x2u
+\0\07	\(em	music (allows you to enter a tune and play it)
+.ti-\n(x2u
+\0\08	\(em	gives the date
+.sp
+.ti-\n(x2u
+100	\(em	squash ladder
+.ti-\n(x2u
+101	\(em	stores information service
+.ti-\n(x2u
+102	\(em	computes means and standard deviations
+.ti-\n(x2u
+103	\(em	telephone directory
+.sp
+.ti-\n(x2u
+411	\(em	user information
+.ti-\n(x2u
+412	\(em	change password
+.ti-\n(x2u
+413	\(em	gripe (permits feedback on services from caller)
+.sp
+.ti-\n(x2u
+600	\(em	first year laboratory marks entering service
+.sp
+.ti-\n(x2u
+910	\(em	repeat utterance (allows testing of system)
+.ti-\n(x2u
+911	\(em	speak utterance (allows testing of system)
+.ti-\n(x2u
+912	\(em	enable/disable user 100 (a no-password guest user number)
+.ti-\n(x2u
+913	\(em	mount a magnetic tape on the computer
+.ti-\n(x2u
+914	\(em	set/reset demonstration mode (prohibits access by low-priority users)
+.ti-\n(x2u
+915	\(em	inhibit games
+.ti-\n(x2u
+916	\(em	inhibit the MOO game
+.ti-\n(x2u
+917	\(em	disable password checking when users log in
+.ta 0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i +0.8i
+.in 0
+.nf
+.FG "Table 1.6  Summary of services on a telephone enquiry system"
+They range from simple games and demonstrations, through serious database
+services, to system maintenance facilities.
+A priority structure is imposed upon them, with higher
+service numbers being available only to higher priority users.
+Services in the lowest range (1\-99) can be obtained by all, while
+those in the highest range (900\-999) are maintenance services,
+available only to the system designers.  Access to the lower-numbered
+"games" services can be inhibited by a priority user \(em this was
+found necessary to prevent over-use of the system!  Another advantage
+of telephone access to an information retrieval system is that some
+day-to-day maintenance can be done remotely, from the office telephone.
+.pp
+This telephone enquiry service, which was built in 1974, demonstrated that
+speech synthesis had moved from a specialist phonetic discipline into the
+province of engineering practicability.  The speech was generated "by rule"
+from a phonetic input (the method is covered in Chapters 7 and 8), which
+has very low data storage requirements of around 75\ bit/s of speech.
+Thus an enormous vocabulary and range of services could be accomodated on a
+small computer system.
+Despite the fairly low quality of the speech, the response from callers was
+most encouraging.  Admittedly the user population was a self-selected body of
+University staff, which one might suppose to have high tolerance to new ideas,
+and a system designed for the general public would require more effort to be
+spent on developing speech of greater intelligibility.  Although it was
+observed that some callers failed to understand parts of the responses, even
+after repetition, communication was largely unhindered in most cases; users
+being driven by a high motivation to help the system help them.
+.pp
+The use of speech output in conjunction with a simple input device requires
+careful thought for interaction to be successful and comfortable.  It is
+necessary that the computer direct the conversation as much as possible,
+without seeming to be taking charge.  Provision for eliminating prompts
+which are unwanted by sophisticated users is essential to avoid frustration.
+We will return to the topic of programming techniques for speech interaction
+in Chapter 10.
+.pp
+Making a computer system available over the telephone results in a sudden
+vast increase in the user population.  Although people's reaction to a new
+computer terminal in every office was overwhelmingly favourable, careful
+resource allocation was essential to prevent the service being hogged by a
+persistent few.  As with all multi-access computer systems, it is particularly
+important that error recovery is effected automatically and gracefully.
+.sh "1.4  Speech output in the telephone exchange"
+.pp
+The telephone enquiry service was an experimental vehicle for research on speech
+interaction, and was developed in 1974.
+Since then, speech has begun to be used in real commercial applications.
+One example is System\ X, the British Post Office's computer-controlled
+telephone exchange.  This incorporates many features
+not found in conventional telephone exchanges.
+For example, if a number is found to be busy, the call can be attempted
+again by a "repeat last call" command, without having to re-dial the full number.
+Alternatively, the last number can be stored for future re-dialling, freeing
+the phone for other calls.
+"Short code
+dialling" allows a customer to associate short codes with commonly-dialled
+numbers.
+Alarm calls can be booked at specified times, and are made automatically
+without human intervention.
+Incoming calls can be barred, as can outgoing ones.  A diversion service
+allows all incoming calls to be diverted to another telephone, either
+immediately, or if a call to the original number remains unanswered for
+a specified period of time, or if the original number is busy.
+Three-party calls can be set up automatically, without involving the
+operator.
+.pp
+Making use of these facilities presents the caller with something of a problem.
+With conventional telephone exchanges, feedback is provided on what is happening
+to a call by the use of four tones \(em the dial tone, the busy tone,
+the ringing tone, and the number unavailable tone.
+For the more sophisticated interaction which is expected on the advanced
+exchange, a much greater variety of status signals is required.
+The obvious solution is to use
+computer-generated spoken
+messages to inform the caller when these services are invoked, and to guide him
+through the sequences of actions needed to set up facilities like call
+re-direction.  For example, the messages used by the exchange when a user
+accesses the alarm call
+service are
+.LB
+.NI
+Alarm call service.
+Dial the time of your alarm call followed by square\u\(dg\d.
+.FN 1
+\(dg\d"Square" is the term used for the "#" key on the touch-tone telephone.\u
+.EF
+.NI
+You have booked an alarm call for seven thirty hours.
+.NI
+Alarm call operator.  At the third stroke it will be seven thirty.
+.LE
+.pp
+Because of the rather small vocabulary, the number of messages that can be
+stored in their entirety rather than being formed by concatenation of
+smaller units, and the short time which was available for development,
+System\ X stores speech as a time waveform, slightly compressed by a time-domain
+encoding operation (such techniques are described in Chapter 3).
+Utterances which contain variable parts, like the time of alarm in the messages
+above, are formed by inserting separately-recorded digits in a fixed 
+"carrier" message.  No attempt is made to apply uniform intonation
+contours to the synthetic utterances.  The resulting speech is of excellent
+quality (being a slightly compressed recording of a human voice), but sometimes
+exhibits somewhat anomalous pitch contours.
+For example, the digits comprising numbers often sound rather jerky and
+out-of-context \(em which indeed they are.
+.pp
+Even more advanced facilities can be expected on telephone exchanges in
+the future.  A message storage capability is one example.  Although
+automatic call recording machines have been available for years, a centralized
+facility could time and date a message, collect the caller's identity
+(using the telephone keypad), and allow the recipient to select messages left
+for him through an interactive dialogue so that he could control the order
+in which he listens to them.  He could choose to leave certain messages to be
+dealt with later, or re-route them to a colleague.  He may even wish to leave
+reminders for himself, to be dialled automatically at specified times (like
+alarm calls with user-defined information attached).  The sender of a message
+could be informed automatically by the system when it is delivered.  None of
+this requires speech recognition, but it does need economical speech
+.ul
+storage,
+and also speech
+.ul
+synthesis
+(for time and date tags).
+.sh "1.5  Travel consultant"
+.pp
+Some current research in speech communication with computers is aimed at
+embedding the dialogue in a task environment which provides it with an overall
+contextual framework.
+This in fact was the motivation for the experimental telephone enquiry service
+described above, and it was observed that people are able to tolerate rather
+low quality speech if they feel that the interaction is worthwhile.  One step
+further is the use of speech
+.ul
+input
+as well as output, and here the context of the conversation which is provided
+by the task environment can be used to improve recognition accuracy
+significantly.
+A system set up at Bell Telephone Laboratories indicates what we can expect
+to find operating commercially in the future (Levinson and Shipley, 1980).
+.[
+Levinson Shipley 1980
+.]
+It provides timetable information about airline flights, and allows the user
+to make reservations.
+.pp
+An example dialogue is given in Table 1.7.
+.RF
+.fi
+.nh
+.na
+.in 0.3i
+.nr x0 \w'COMPUTER:  '
+.nr x1 \w'CALLER:  '
+.in+\n(x0u
+.ti-\n(x0u
+COMPUTER:  This is the Bell Laboratories flight information system.  May I help you?
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  I would like to go to Chicago.
+.ti-\n(x0u
+COMPUTER:  Please specify the day of your departure.
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  I want to leave at four p.m..
+.ti-\n(x0u
+COMPUTER:  Please specify the day of your departure.
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  I want to depart on the two five May.
+.ti-\n(x0u
+COMPUTER:  Flight number nine two leaves New York at four p.m. arrives in Chicago at five twenty five p.m..
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  What plane is on the flight?
+.ti-\n(x0u
+COMPUTER:  The aircraft is a Boeing seven twenty seven.
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  How much is the fare?
+.ti-\n(x0u
+COMPUTER:  The round trip coach fare is one hundred forty two dollars.
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  I want a first class seat.
+.ti-\n(x0u
+COMPUTER:  One seat thank you.
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  What is the fare?
+.ti-\n(x0u
+COMPUTER:  The round trip first class fare is one hundred eighty four dollars.
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  Please repeat the arrival time.
+.ti-\n(x0u
+COMPUTER:  The arrival time is five twenty five p.m..
+.ti-\n(x0u
+CALLER:\h'\n(x0u-\n(x1u'  I will take the flight.
+.ti-\n(x0u
+COMPUTER:  Your reservation on flight number nine two to Chicago on Friday is confirmed.  Thank you.
+.in 0
+.nf
+.MT 2
+Table 1.7  A conversation with an airline flight information service
+(from Levinson and Shipley, 1980)
+.TE
+.[
+Levinson Shipley 1980
+.]
+The user dials the system from an
+ordinary telephone.  The recognition side must be trained by each user, and
+accepts isolated words spoken with brief pauses between them.
+The voice response unit has a vocabulary of around 200 words, and
+synthesizes its answers by slotting words into "templates" evoked by the speech
+understanding part in response to a query.  For example,
+.LB
+.NI
+This flight makes \(em stops
+.NI
+Flight number \(em leaves \(em at \(em , arrives in \(em at \(em
+.LE
+are templates which when called with specific slot fillers could produce the
+utterances
+.LB
+.NI
+This flight makes three stops
+.NI
+Flight number nine two leaves New York at four p.m.,
+arrives in Chicago at five twenty-five p.m.
+.LE
+The chief research interest of the system is in its speech understanding
+capabilities, and the method used for speech output is relatively
+straightforward.  The templates and words are recorded, digitized, compressed
+slightly, and stored on disk files (totalling a few hundred thousand bytes of
+storage), using techniques similar to those of System\ X.
+Again, no independent manipulation of pitch is possible, and so the utterances
+sound intelligible but the transition between templates and slot fillers is not
+completely fluent.  However, the overall context of the interaction means that
+the communication is not seriously disrupted even if the machine occasionally
+misunderstands the man or vice versa.  The user's attention is drawn away from
+recognition accuracy and focussed on the exchange of information with the machine.
+The authors conclude that progress in speech recognition can best be made by
+studying it in the context of communication rather than in a vacuum or as part
+of a one-way channel, and the same is undoubtedly true of speech synthesis as
+well.
+.sh "1.6  Reading machine for the blind"
+.pp
+Perhaps the most advanced attempt to provide speech output from a computer
+is the Kurzweil reading machine for the blind, first marketed in the late
+1970's (Figure 1.4).
+.FC "Figure 1.4"
+This device reads an ordinary book aloud.  Users adjust the reading
+speed according to the content of the material and their familiarity with
+it, and the maximum rate has recently been improved to around 225 words per
+minute \(em perhaps half as fast again as normal human speech rates.
+.pp
+As well as generating speech from text, the machine has to scan the document
+being read and identify the characters presented to it.  A scanning camera
+is used, controlled by a program which searches for and tracks the lines of
+text.  The output of the camera is digitized, and the image is enhanced
+using signal-processing techniques.  Next each individual letter must be
+isolated, and its geometric features identified and compared with a pre-stored
+table of letter shapes.  Isolation of letters is not at all trivial, for
+many type fonts have "ligatures" which are combinations of characters joined
+together (for example, the letters "fi" are often run together.)  The
+machine must cope with many printed type fonts, as well as typewritten ones.
+The text-recognition side of the Kurzweil reading machine is in fact one of
+its most advanced features.
+.pp
+We will discuss the problem of speech generation from text in Chapter 9.
+It has many facets.  First there is pronunciation, the
+translation of letters to sounds.  It is important to take into account
+the morphological structure of words, dividing them into "root" and "endings".
+Many words have concatenated suffixes (like "like-li-ness").  These are
+important to detect, because a final "e" which appears on a root word
+is not pronounced itself but affects the pronunciation of the previous
+vowel.  Then there is the difficulty that some words look the same
+but are pronounced differently, depending on their meaning or on the syntactic
+part that they play in the sentence.
+Appropriate intonation is extremely difficult to generate from a plain textual
+representation, for it depends on the meaning of the text and the way in which
+emphasis is given to it by the reader.  Similarly the rhythmic structure is
+important, partly for correct pronunciation and partly for purposes of
+emphasis.
+Finally the sounds that have been deduced from the text need to be synthesized
+into acoustic form, taking due account of the many and varied contextual effects
+that occur in natural speech.  This by itself is a challenging problem.
+.pp
+The performance of the Kurzweil reading machine is not good.  While it seems
+to be true that some blind people can make use of it, it is far from
+comprehensible to an untrained listener.  For example,
+it will miss out words and even whole phrases, hesitate in a
+stuttering manner, blatantly mis-pronounce many words, fail to detect
+"e"s which should be silent, and give completely wrong rhythms
+to words, making them impossible to understand.
+Its intonation is decidedly unnatural, monotonous, and often downright
+misleading.  When it reads completely new text to people unfamiliar with its
+quirks,
+they invariably fail to understand more than an odd word here and there,
+and do not improve significantly when the text is repeated more than once.
+Naturally performance improves if the material is familiar or expected
+in some way.
+One useful feature is the machine's ability to spell out difficult words
+on command from the user.
+.pp
+While not wishing to denigrate the Kurzweil machine, which is a remarkable
+achievement in that it integrates together many different advanced
+technologies, there is no doubt that the state of the art in speech synthesis
+directly from unadorned text is extremely primitive, at present.
+It is vital not to overemphasize the potential usefulness of abysmal speech,
+which takes a great deal of training on the part of the user before
+it becomes at all intelligible.  To make a rather extreme analogy,
+Morse code could be used as
+audio output, requiring a great deal of training, but capable of being understood
+at quite high rates by an expert.
+It could be generated very cheaply.
+But clearly the man in the street would find it quite unacceptable as
+an audio output medium, because of the excessive effort required to learn to use
+it.  In many applications, very bad synthetic speech is just as useless.
+However, the issue is complicated by the fact that for people who use
+synthesizers regularly, synthetic speech becomes quite easily comprehensible.
+We will return to the problem of evaluating the quality of artificial speech
+later in the book (Chapter 8).
+.sh "1.7  System considerations for speech output"
+.pp
+Fortunately, very many of the applications of speech output from computers
+do not need to read unadorned text.
+In all the example systems described above (except the reading machine),
+it is enough to be able to store utterances in some representation which can
+include pre-programmed cues for pronunciation, rhythm, and intonation in
+a much more explicit way than ordinary text does.
+.pp
+Of course, techniques
+for storing audio information have been in use for decades.
+For example, a domestic cassette tape recorder stores speech at much better
+than telephone quality at very low cost.  The method of direct
+recording of an analogue waveform is currently used for announcements in
+the telephone network to provide information such as the time, weather
+forecasts, and even bedtime stories.
+However, it is difficult to provide rapid access to messages stored in
+analogue form, and although some computer peripherals which use analogue
+recordings for voice-response applications have been marketed \(em they are
+discussed briefly at the beginning of Chapter 3 \(em they have been
+superseded by digital storage techniques.
+.pp
+Although direct storage of a digitized audio waveform is used in some
+voice-response systems, the approach has certain limitations.  The most
+obvious one is the large storage requirement:  suitable coding can reduce
+the data-rate of speech to as little as one hundredth of that needed by
+direct digitization, and textual representations reduce it by another factor
+of ten or twenty.  (Of course, the speech quality is inevitably compromised
+somewhat by data-compression techniques.)  However, the cost of storage is
+dropping so fast that this is not necessarily an overriding factor.
+A more fundamental limitation is that utterances stored directly cannot sensibly
+be modified in any way to take account of differing contexts.
+.pp
+If the results of certain kinds of analyses
+of utterances are stored, instead of simply the digitized waveform,
+a great deal more flexibility can be gained.
+It is possible to separate out the features of intonation and amplitude from
+the articulation of the speech, and this raises the attractive possibility
+of regenerating utterances with pitch contours different from those with which they were
+recorded.
+The primary analysis technique used for this purpose is
+.ul
+linear prediction
+of speech, and this is treated in some detail in Chapter 6.  It also reduces drastically the
+data-rate of speech, by a factor of around 50.
+It is likely that many voice-response systems in the short- and medium-term
+future will use linear predictive representations for utterance storage.
+.pp
+For maximum flexibility, however, it is preferable to store a textual
+representation of the utterance.
+There is an important distinction between speech
+.ul
+storage,
+where an actual human utterance is recorded, perhaps processed to lower
+the data-rate, and stored for subsequent regeneration when required,
+and speech
+.ul
+synthesis,
+where the machine produces its own individual utterances which are not based
+on recordings of a person saying the same thing.  The difference is summarized
+in Figure 1.5.
+.FC "Figure 1.5"
+In both cases something is stored:  for the first it is
+a direct representation of an actual human utterance, while for the second
+it is a typed
+.ul
+description
+of the utterance in terms of the sounds, or phonemes, which constitute it.
+The accent and tone of voice of the human speaker will be apparent in
+the stored speech output, while for synthetic speech the accent is the
+machine's and the tone of voice is determined by the synthesis program.
+.pp
+Probably the most attractive representation of utterances in man-machine
+systems is ordinary English text, as used by the Kurzweil reading machine.
+But, as noted above, this poses extraordinarily difficult problems for the
+synthesis procedure, and these inevitably result in severely degraded speech.
+Although in the very long term these problems may indeed be solved,
+most speech output systems can adopt as their representation of an utterance
+a description of it which explicitly conveys the difficult features of
+intonation, rhythm, and even pronunciation.
+In the kind of applications described above (barring the reading machine),
+input will be prepared by a
+programmer as he builds the software system which supports the interactive
+dialogue.
+Although it is important that the method of specifying utterances be easily
+learned, it is not necessary that plain English
+is used.  It should be simple for the programmer to enter new
+utterances and modify them on-line in cut-and-try attempts to render the
+man-machine dialogue as natural as possible.  A phonetic input
+can be quite adequate for this, especially if the system allows the
+programmer to hear immediately the synthesized version of the message
+he types.  Furthermore, markers which indicate rhythm and intonation can
+be added to the message so that the system does not have to deduce these features
+by attempting to "understand" the plain text.
+.pp
+This brings us to another disadvantage of speech storage as compared with
+speech synthesis.  To provide utterances for a voice response system using
+stored human speech, one must assemble together special input hardware,
+a quiet room, and (probably) a dedicated computer.  If the speech is to be
+heavily encoded, either expensive special hardware is required or the encoding
+process, if performed by software on a general-purpose computer, will take
+a considerable length of time (perhaps hundreds of times real-time).  In
+either case, time-consuming editing of the speech will be necessary, with
+follow-up recordings to clarify sections of speech which turn out to be
+unsuitable or badly recorded.  If at a later date the voice response
+system needs modification, it will be necessary to recall the same speaker,
+or re-record the entire utterance set.  This discourages the application
+programmer from adjusting his dialogue in the light of experience.
+Synthesizing from a textual representation, on the other hand, allows him
+to change a speech prompt as simply as he could a VDU one, and evaluate
+its effect immediately.
+.pp
+We will return to methods of digitizing and compacting speech in Chapters 3
+and 4, and carry on to consider speech synthesis in subsequent chapters.
+Firstly, however, it is necessary to take a look at what speech is and how
+people produce it.
+.sh "1.8  References"
+.LB "nnnn"
+.[
+$LIST$
+.]
+.LE "nnnn"
+.sh "1.9  Further reading"
+.pp
+There are remarkably few general books on speech output, although a
+substantial specialist literature exists for the subject.
+In addition to the references listed above, I suggest that you look
+at the following.
+.LB "nn"
+.\"Ainsworth-1976-1
+.]-
+.ds [A Ainsworth, W.A.
+.ds [D 1976
+.ds [T Mechanisms of speech recognition
+.ds [I Pergamon
+.nr [T 0
+.nr [A 1
+.nr [O 0
+.][ 2 book
+.in+2n
+A nice, easy-going introduction to speech recognition, this book covers
+the acoustic structure of the speech signal in a way which makes
+it useful as background reading for speech synthesis as well.
+It complements Lea, 1980, cited above; which presents more recent results
+in greater depth.
+.in-2n
+.\"Flanagan-1973-2
+.]-
+.ds [A Flanagan, J.L.
+.as [A " and Rabiner, L.R. (Editors)
+.ds [D 1973
+.ds [T Speech synthesis

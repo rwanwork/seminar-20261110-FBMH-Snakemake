@@ -1,0 +1,19 @@
+DATA_DIR = "../../data"
+OUTPUT_DIR = "Output"
+
+rule TopAlice:
+  input:  DATA_DIR + "/canterbury/alice29"
+  output:  OUTPUT_DIR + "/01-top/alice29.head"
+  shell:
+    """
+    head -n 1000 {input} >{output}
+    """
+
+rule CountAlice:
+  input:  OUTPUT_DIR + "/01-top/alice29.head"
+  output:  OUTPUT_DIR + "/02-count/alice29.count"
+  shell:
+    """
+    wc -w -c {input} >{output}
+    """
+

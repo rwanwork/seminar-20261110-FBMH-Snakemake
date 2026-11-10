@@ -1,0 +1,22 @@
+\newcommand{\tabsource}[1]{{\tiny{(Table source:  #1.)}}}
+\newcommand{\figsource}[1]{{\tiny{(Figure source:  #1.)}}}
+\newcommand{\textsource}[1]{{\tiny{(Text source:  #1.)}}}
+\newcommand{\exsource}[1]{{\tiny{(Example source:  #1.)}}}
+\newcommand{\refsource}[1]{{\tiny{(Ref:  #1.)}}}
+\newcommand{\gensource}[1]{{\tiny{(Source:  #1.)}}}
+
+%  https://tex.stackexchange.com/questions/371286/draw-a-horizontal-line-in-latex
+\newcommand{\horizontalline}{\par\noindent\rule{\textwidth}{0.4pt}}
+
+%  https://tex.stackexchange.com/questions/312/correctly-typesetting-a-tilde
+%    Requires \usepackage{textcomp}
+%    * \textasciitilde is an alternative
+%    * $\sim$ is an alternative, but puts it in math mode
+\newcommand{\tildeapprox}{\raisebox{0.5ex}{\texttildelow}}
+
+%  Check marks, X's, etc.
+%    Requires \usepackage{pifont}
+\newcommand{\greencheck}{{\green{\ding{51}}}\xspace}
+\newcommand{\redx}{{\red{X}}\xspace}
+\newcommand{\na}{{\blue{N/A}}\xspace}
+\newcommand{\magunknown}{{\magenta{?}}\xspace}

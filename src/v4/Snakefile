@@ -1,0 +1,26 @@
+##  Include important variables
+include:  "global-vars.smk"
+
+rule all:
+  input:
+    OUTPUT_DIR + "/02-count/alice29.count",
+    OUTPUT_DIR + "/02-count/asyoulik.count",    
+    OUTPUT_DIR + "/02-count/lcet10.count",    
+    OUTPUT_DIR + "/02-count/plrabn12.count"
+
+rule FileTop:
+  input:  DATA_DIR + "/canterbury/{fn}"
+  output:  OUTPUT_DIR + "/01-top/{fn}.head"
+  shell:
+    """
+    head -n 1000 {input} >{output}
+    """
+
+rule Count:
+  input:  OUTPUT_DIR + "/01-top/{fn}.head"
+  output:  OUTPUT_DIR + "/02-count/{fn}.count"
+  shell:
+    """
+    wc -w -c {input} >{output}
+    """
+

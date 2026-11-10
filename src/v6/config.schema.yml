@@ -1,0 +1,12 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+description:  Snakemake configuration file
+
+type: object
+
+properties:
+  my_options:
+    description:  Various options supplied to programs
+    type:  object
+    items:
+      type:  string
