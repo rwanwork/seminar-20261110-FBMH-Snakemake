@@ -1,5 +1,15 @@
 *~
 .snakemake
 Output
-dag.*
 *.aux
+p.bbl
+p.bcf
+p.blg
+p.log
+p.nav
+p.out
+p.run.xml
+p.snm
+p.toc
+p.upa
+p.vrb

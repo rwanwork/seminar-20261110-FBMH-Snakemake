@@ -99,7 +99,7 @@ rule CountAlice: & \only<1>{{\red{$\leftarrow$}}} \\
   {\D\D}output:  OUTPUT\_DIR + "/alice29.count" & \only<3>{{\red{$\leftarrow$}}} \\
   {\D\D}shell: & \only<4>{{\red{$\leftarrow$}}} \\
   {\D\D\D\D}""" & \only<5>{{\red{$\leftarrow$}}} \\
-  {\D\D\D\D}cat {input} | head -n 1000 | wc -w -c >{output} & \only<6>{{\red{$\leftarrow$}}} \\
+  {\D\D\D\D}cat \{input\} | head -n 1000 | wc -w -c >\{output\} & \only<6>{{\red{$\leftarrow$}}} \\
   {\D\D\D\D}""" & \only<5>{{\red{$\leftarrow$}}} \\
   \end{tabular}
 \end{figure}
