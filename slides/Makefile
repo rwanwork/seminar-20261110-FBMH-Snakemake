@@ -3,6 +3,7 @@ p.pdf:  background.tex intro.tex tips.tex p.tex structure.tex summary.tex finale
 	biber p
 	lualatex p
 	lualatex p
+	cp p.pdf ../
 
 clean:
 	rm -f p.pdf *.aux p.bbl p.bcf p.blg p.log p.run.xml p.nav p.out p.snm p.toc p.upa
